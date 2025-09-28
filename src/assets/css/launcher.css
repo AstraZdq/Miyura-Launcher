@@ -116,6 +116,7 @@ input::-webkit-inner-spin-button {
 
 .darwin-icon-maximize:before {
     background: #07d014;
+    display: none;
 }
 
 .darwin-icon-minimize:before {
@@ -192,4 +193,10 @@ input::-webkit-inner-spin-button {
     opacity: 1;
     z-index: 1;
     pointer-events: all;
+}
+
+/* Cache complètement le bouton maximiser */
+.other .button-frame.icon-maximize,
+.other .button-frame.icon-restore-down {
+    display: none !important;
 }

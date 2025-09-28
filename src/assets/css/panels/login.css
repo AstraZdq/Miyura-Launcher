@@ -1,3 +1,4 @@
+/* --- LOGIN STYLE REWORK --- */
 .login .container {
     display: flex;
     align-items: center;
@@ -6,12 +7,16 @@
 }
 
 .login-tabs {
-    position: absolute;
-    padding: 15px;
-    background: var(--background);
-    border-radius: 15px;
+    background: var(--background-card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem 3rem;
+    min-width: 400px;
     text-align: center;
-    min-width: 40%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    animation: fadeInUp 0.6s ease-out;
+    position: relative;
 }
 
 .login-home,
@@ -22,29 +27,73 @@
 }
 
 .login-text {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), #74b9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.connect,
-.cancel {
-    background: none;
-    color: var(--color);
-    border: solid 4px var(--element-color);
-    border-radius: 10px;
-    padding: 0.3rem 4rem;
-    font-size: inherit;
-    font-weight: bold;
-    margin: 15px 10px;
+.input-login {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .input-login .email,
 .input-login .password,
 .A2F {
-    color: var(--color);
-    background: none;
-    border: solid 2px var(--element-color);
-    border-radius: 30px;
-    width: 50%;
-    padding: 0.4rem 1rem;
-    margin-top: 10px;
+    background: var(--background-light);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.9rem 1.2rem;
+    width: 100%;
+    font-size: 1rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.input-login .email:focus,
+.input-login .password:focus,
+.A2F:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(214,161,0,0.3);
+}
+
+.connect,
+.cancel {
+    border: none;
+    border-radius: 12px;
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.connect {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: #fff;
+}
+
+.connect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(214,161,0,0.4);
+}
+
+.cancel {
+    background: var(--background-light);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.cancel:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: scale(1.05);
 }

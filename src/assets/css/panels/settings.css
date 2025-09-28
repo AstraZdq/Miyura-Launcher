@@ -3,20 +3,25 @@
     height: 100%;
 }
 
+/* --- NAVIGATION SETTINGS --- */
 .nav-settings {
     width: 20%;
     height: 100%;
-    background: var(--background);
+    background: var(--background-card);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    font-size: 2.5rem;
+    font-size: 2rem;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.2);
 }
 
 .nav-settings p {
-    font-size: 60%;
-    margin-top: 80px;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+    color: var(--text-secondary);
 }
 
 .nav-box {
@@ -27,25 +32,51 @@
 }
 
 .nav-box #save {
-    border: solid 4px var(--background-element);
-    margin: 3rem;
+    border: none;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: #fff;
+    font-weight: 600;
+    border-radius: 15px;
+    padding: 0.8rem 1.5rem;
+    margin: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.nav-box #save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(214,161,0,0.4);
 }
 
 .nav-settings-btn {
-    font-size: 50%;
-    border: solid 4px var(--element-color);
-    padding: 5px 10px;
-    border-radius: 10px;
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
     width: 70%;
     text-align: center;
     margin: 0.5rem 0;
     cursor: pointer;
+    background: var(--background-light);
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-settings-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: scale(1.05);
 }
 
 .active-settings-BTN {
-    background: var(--element-color);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: #fff;
+    font-weight: 600;
+    border: none;
 }
 
+/* --- CONTENT SETTINGS --- */
 .container-settings {
     position: absolute;
     display: flex;
@@ -56,19 +87,24 @@
     height: calc(100% - 26px);
     opacity: 0;
     pointer-events: none;
-
+    transition: opacity 0.4s ease;
 }
 
 .settings-elements-box {
-    background: var(--background-element);
+    background: var(--background-card);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
     width: 80%;
-    border-radius: 10px;
-    padding: 1.5rem 2rem;
-    margin: 0.5rem;
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 1rem 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    animation: fadeInUp 0.6s ease-out;
 }
 
 .setting-text {
-    font-size: 0.8rem;
+    font-size: 1rem;
+    color: var(--text-primary);
 }
 
 .active-container-settings {
@@ -81,13 +117,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2rem;
+    font-size: 1.8rem;
     margin: 1.5rem 0;
-    padding: 0.5rem 2rem;
+    padding: 0.7rem 2rem;
     border-radius: 2rem;
     text-align: center;
-    background: var(--background-transparent);
-    color: var(--color);
+    background: linear-gradient(135deg, var(--primary-color), #74b9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
 }
 
 .settings-elements {
@@ -106,9 +144,7 @@
 }
 
 /*******************************************************************************
- *                                                                             *
- * account tab                                                                 *
- *                                                                             *
+ * account tab
  ******************************************************************************/
 .accounts-list {
     max-height: 90%;
@@ -119,19 +155,25 @@
 }
 
 .account {
-    background: var(--background-element);
-    border: solid 4px var(--background-element);
+    background: var(--background-light);
+    border: 1px solid var(--border-color);
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: calc(400px - 8px);
-    height: calc(100px - 8px);
+    width: 400px;
+    height: 100px;
     margin: 1rem;
     border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+.account:hover {
+    transform: translateY(-3px);
 }
 
 .account-select {
-    border: solid 4px var(--element-color);
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 10px rgba(214,161,0,0.3);
 }
 
 .accounts-list #add {
@@ -147,10 +189,12 @@
     justify-content: center;
     align-items: center;
     pointer-events: none;
+    color: var(--primary-color);
 }
 
 .add-text-profile {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
     pointer-events: none;
 }
 
@@ -159,7 +203,7 @@
     height: 70px;
     background: url(../../images/default/setve.png);
     background-size: cover;
-    border-radius: 15px;
+    border-radius: 12px;
     pointer-events: none;
     image-rendering: pixelated;
 }
@@ -168,24 +212,25 @@
     text-align: center;
     width: 10rem;
     pointer-events: none;
-
 }
 
 .profile-pseudo {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
     pointer-events: none;
-
+    color: var(--text-primary);
 }
 
 .profile-uuid {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
     pointer-events: none;
-
 }
 
 .delete-profile {
@@ -193,12 +238,16 @@
     height: 70px;
     background: var(--background-transparent);
     border-radius: 15px;
-    font-size: 3rem;
+    font-size: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
     color: #ff2c2c;
     cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.delete-profile:hover {
+    transform: scale(1.1);
 }
 
 .delete-profile-icon {
@@ -206,11 +255,8 @@
 }
 
 /*******************************************************************************
- *                                                                             *
- * java tab                                                                    *
- *                                                                             *
+ * java tab
  ******************************************************************************/
-
 .memory-slider {
     position: relative;
     margin: 0 1.5rem 0 0;
@@ -342,6 +388,18 @@
     border-radius: 15px;
     margin: 0 1rem;
     cursor: pointer;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /*******************************************************************************
