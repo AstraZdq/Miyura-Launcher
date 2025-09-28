@@ -202,12 +202,17 @@ class Home {
         let configClient = await this.db.readData('configClient')
         let instance = await config.getInstanceList()
         let authenticator = await this.db.readData('accounts', configClient.account_selected)
-let options = instance.find(i => i.name == configClient.instance_selct);
-if (!options) {
-    console.error('[ERROR] Instance non trouvée pour:', configClient.instance_selct);
-    // Affiche un popup ou retourne pour éviter le crash
-    return;
-}
+        let options = instance.find(i => i.name == configClient.instance_selct);
+        if (!options) {
+            console.error('[ERROR] Instance non trouvée pour:', configClient.instance_selct);
+            // Affiche un popup ou retourne pour éviter le crash
+            return;
+        }
+        // Correction du token Microsoft pour l'authentification
+        if (authenticator && authenticator.access_token) {
+            authenticator.accessToken = authenticator.access_token;
+            delete authenticator.access_token;
+        }
         let playInstanceBTN = document.querySelector('.play-instance')
         let infoStartingBOX = document.querySelector('.info-starting-game')
         let infoStarting = document.querySelector(".info-starting-game-text")
