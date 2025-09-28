@@ -202,13 +202,21 @@ class Home {
         let configClient = await this.db.readData('configClient')
         let instance = await config.getInstanceList()
         let authenticator = await this.db.readData('accounts', configClient.account_selected)
-        let options = instance.find(i => i.name == configClient.instance_selct)
-
+let options = instance.find(i => i.name == configClient.instance_selct);
+if (!options) {
+    console.error('[ERROR] Instance non trouvée pour:', configClient.instance_selct);
+    // Affiche un popup ou retourne pour éviter le crash
+    return;
+}
         let playInstanceBTN = document.querySelector('.play-instance')
         let infoStartingBOX = document.querySelector('.info-starting-game')
         let infoStarting = document.querySelector(".info-starting-game-text")
         let progressBar = document.querySelector('.progress-bar')
 
+        // Correction : utilise le bon champ pour le token Microsoft
+        if (authenticator && authenticator.access_token) {
+            authenticator.accessToken = authenticator.access_token;
+        }
         let opt = {
             url: options.url,
             authenticator: authenticator,
@@ -219,29 +227,22 @@ class Home {
             detached: configClient.launcher_config.closeLauncher == "close-all" ? false : true,
             downloadFileMultiple: configClient.launcher_config.download_multi,
             intelEnabledMac: configClient.launcher_config.intelEnabledMac,
-
             loader: {
                 type: options.loadder.loadder_type,
                 build: options.loadder.loadder_version,
                 enable: options.loadder.loadder_type == 'none' ? false : true
             },
-
             verify: options.verify,
-
             ignored: [...options.ignored],
-
             java: {
                 path: configClient.java_config.java_path,
             },
-
             JVM_ARGS:  options.jvm_args ? options.jvm_args : [],
             GAME_ARGS: options.game_args ? options.game_args : [],
-
             screen: {
                 width: configClient.game_config.screen_size.width,
                 height: configClient.game_config.screen_size.height
             },
-
             memory: {
                 min: `${configClient.java_config.java_memory.min * 1024}M`,
                 max: `${configClient.java_config.java_memory.max * 1024}M`

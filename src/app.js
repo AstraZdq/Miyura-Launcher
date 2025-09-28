@@ -12,6 +12,8 @@ const fs = require('fs');
 
 const UpdateWindow = require("./assets/js/windows/updateWindow.js");
 const MainWindow = require("./assets/js/windows/mainWindow.js");
+const { startDiscordRpc } = require('./assets/js/utils/discordRpc.js');
+startDiscordRpc();
 
 let dev = process.env.NODE_ENV === 'dev';
 
@@ -61,7 +63,9 @@ ipcMain.on('main-window-hide', () => MainWindow.getWindow().hide())
 ipcMain.on('main-window-show', () => MainWindow.getWindow().show())
 
 ipcMain.handle('Microsoft-window', async (_, client_id) => {
-    return await new Microsoft(client_id).getAuth();
+    const result = await new Microsoft(client_id).getAuth();
+    console.log('[DEBUG][main] Résultat getAuth:', result);
+    return result;
 })
 
 ipcMain.handle('is-dark-theme', (_, theme) => {
