@@ -198,63 +198,168 @@ class Home {
     }
 
     async startGame() {
-        let launch = new Launch()
-        let configClient = await this.db.readData('configClient')
-        let instance = await config.getInstanceList()
-        let authenticator = await this.db.readData('accounts', configClient.account_selected)
-        let options = instance.find(i => i.name == configClient.instance_selct);
-        if (!options) {
-            console.error('[ERROR] Instance non trouvée pour:', configClient.instance_selct);
-            // Affiche un popup ou retourne pour éviter le crash
-            return;
-        }
-        // Correction du token Microsoft pour l'authentification
-        if (authenticator && authenticator.access_token) {
-            authenticator.accessToken = authenticator.access_token;
-            delete authenticator.access_token;
-        }
-        let playInstanceBTN = document.querySelector('.play-instance')
-        let infoStartingBOX = document.querySelector('.info-starting-game')
-        let infoStarting = document.querySelector(".info-starting-game-text")
-        let progressBar = document.querySelector('.progress-bar')
-
-        // Correction : utilise le bon champ pour le token Microsoft
-        if (authenticator && authenticator.access_token) {
-            authenticator.accessToken = authenticator.access_token;
-        }
-        let opt = {
-            url: options.url,
-            authenticator: authenticator,
-            timeout: 10000,
-            path: `${await appdata()}/${process.platform == 'darwin' ? this.config.dataDirectory : `.${this.config.dataDirectory}`}`,
-            instance: options.name,
-            version: options.loadder.minecraft_version,
-            detached: configClient.launcher_config.closeLauncher == "close-all" ? false : true,
-            downloadFileMultiple: configClient.launcher_config.download_multi,
-            intelEnabledMac: configClient.launcher_config.intelEnabledMac,
-            loader: {
-                type: options.loadder.loadder_type,
-                build: options.loadder.loadder_version,
-                enable: options.loadder.loadder_type == 'none' ? false : true
-            },
-            verify: options.verify,
-            ignored: [...options.ignored],
-            java: {
-                path: configClient.java_config.java_path,
-            },
-            JVM_ARGS:  options.jvm_args ? options.jvm_args : [],
-            GAME_ARGS: options.game_args ? options.game_args : [],
-            screen: {
-                width: configClient.game_config.screen_size.width,
-                height: configClient.game_config.screen_size.height
-            },
-            memory: {
-                min: `${configClient.java_config.java_memory.min * 1024}M`,
-                max: `${configClient.java_config.java_memory.max * 1024}M`
+            const fs = require('fs');
+            let launch = new Launch();
+            let configClient = await this.db.readData('configClient');
+            let instance = await config.getInstanceList();
+            let authenticator = await this.db.readData('accounts', configClient.account_selected);
+            let options = instance.find(i => i.name == configClient.instance_selct);
+            if (!options) {
+                let popupError = new popup();
+                popupError.openPopup({
+                    title: 'Erreur instance',
+                    content: 'Aucune instance Minecraft sélectionnée ou trouvée. Vérifie ta configuration dans les paramètres.',
+                    color: 'red',
+                    options: true
+                });
+                return;
             }
-        }
 
-        launch.Launch(opt);
+            // Rafraîchir le token du compte sélectionné avant de lancer le jeu
+            let refreshedAuthenticator = authenticator;
+            try {
+                if (authenticator && authenticator.meta) {
+                    if (authenticator.meta.type === 'Xbox' || authenticator.meta.type === 'Microsoft') {
+                        const { Microsoft } = require('minecraft-java-core');
+                        let refresh = await new Microsoft(authenticator.meta.client_id || configClient.client_id).refresh(authenticator);
+                        if (!refresh.error && refresh.access_token) {
+                            refreshedAuthenticator = refresh;
+                            refreshedAuthenticator.ID = authenticator.ID;
+                            await this.db.updateData('accounts', refreshedAuthenticator, authenticator.ID);
+                        } else {
+                            throw new Error('Votre session Microsoft a expiré ou le token est invalide. Veuillez vous reconnecter.');
+                        }
+                    } else if (authenticator.meta.type === 'Mojang') {
+                        const { Mojang } = require('minecraft-java-core');
+                        let refresh = await Mojang.refresh(authenticator);
+                        if (!refresh.error && refresh.access_token) {
+                            refreshedAuthenticator = refresh;
+                            refreshedAuthenticator.ID = authenticator.ID;
+                            await this.db.updateData('accounts', refreshedAuthenticator, authenticator.ID);
+                        } else {
+                            throw new Error('Votre session Mojang a expiré ou le token est invalide. Veuillez vous reconnecter.');
+                        }
+                    } else if (authenticator.meta.type === 'AZauth') {
+                        const { AZauth } = require('minecraft-java-core');
+                        let refresh = await new AZauth(configClient.online).verify(authenticator);
+                        if (!refresh.error && refresh.access_token) {
+                            refreshedAuthenticator = refresh;
+                            refreshedAuthenticator.ID = authenticator.ID;
+                            await this.db.updateData('accounts', refreshedAuthenticator, authenticator.ID);
+                        } else {
+                            throw new Error('Votre session AZauth a expiré ou le token est invalide. Veuillez vous reconnecter.');
+                        }
+                    }
+                } else {
+                    throw new Error('Aucun compte authentifié. Veuillez vous connecter.');
+                }
+            } catch (err) {
+                let popupError = new popup();
+                popupError.openPopup({
+                    title: 'Erreur d\'authentification',
+                    content: err.message,
+                    color: 'red',
+                    options: true
+                });
+                return;
+            }
+
+            // Vérification accès dossier .minecraft
+            const mcPath = `${process.env.APPDATA}/.minecraft`;
+            try {
+                if (!fs.existsSync(mcPath)) {
+                    fs.mkdirSync(mcPath, { recursive: true });
+                }
+                fs.accessSync(mcPath, fs.constants.W_OK);
+            } catch (err) {
+                let popupError = new popup();
+                popupError.openPopup({
+                    title: 'Erreur dossier Minecraft',
+                    content: 'Impossible d\'accéder au dossier .minecraft. Vérifie tes droits d\'écriture.',
+                    color: 'red',
+                    options: true
+                });
+                return;
+            }
+
+            let playInstanceBTN = document.querySelector('.play-instance');
+            let infoStartingBOX = document.querySelector('.info-starting-game');
+            let infoStarting = document.querySelector('.info-starting-game-text');
+            let progressBar = document.querySelector('.progress-bar');
+
+            // Vérification du token et du type utilisateur
+            if (!refreshedAuthenticator || !refreshedAuthenticator.access_token) {
+                let popupError = new popup();
+                popupError.openPopup({
+                    title: 'Erreur d\'authentification',
+                    content: 'Le token Microsoft/Mojang est manquant ou invalide. Veuillez vous reconnecter.',
+                    color: 'red',
+                    options: true
+                });
+                return;
+            }
+
+            // Construction des options de lancement avec forçage du type utilisateur
+            let opt = {
+                url: options.url,
+                authenticator: {
+                    ...refreshedAuthenticator,
+                    accessToken: refreshedAuthenticator.access_token,
+                    userType: 'msa',
+                },
+                timeout: 10000,
+                path: mcPath,
+                instance: options.name,
+                version: options.loadder.minecraft_version,
+                detached: configClient.launcher_config.closeLauncher == "close-all" ? false : true,
+                downloadFileMultiple: configClient.launcher_config.download_multi,
+                intelEnabledMac: configClient.launcher_config.intelEnabledMac,
+                loader: {
+                    type: options.loadder.loadder_type,
+                    build: options.loadder.loadder_version,
+                    enable: options.loadder.loadder_type == 'none' ? false : true
+                },
+                verify: options.verify,
+                ignored: [...options.ignored],
+                java: {
+                    path: configClient.java_config.java_path,
+                },
+                JVM_ARGS:  options.jvm_args ? options.jvm_args : [],
+                GAME_ARGS: options.game_args ? options.game_args : [],
+                screen: {
+                    width: configClient.game_config.screen_size.width,
+                    height: configClient.game_config.screen_size.height
+                },
+                memory: {
+                    min: `${configClient.java_config.java_memory.min * 1024}M`,
+                    max: `${configClient.java_config.java_memory.max * 1024}M`
+                }
+            };
+
+            try {
+                launch.Launch(opt);
+            } catch (err) {
+                console.error('[Miyura-Launcher]: Erreur de téléchargement', err);
+                if (err.name === 'AbortError' || (err.message && err.message.includes('signal is aborted'))) {
+                    alert('Le téléchargement a été interrompu. Vérifie ta connexion ou relance le launcher.');
+                } else {
+                    alert('Erreur lors du téléchargement : ' + err.message);
+                }
+                return;
+            }
+
+        // Gestionnaire d'erreur sur l'objet launch
+        launch.on('error', (err) => {
+            console.error('[Miyura-Launcher]: Erreur de téléchargement (event)', err);
+            if (err.name === 'AbortError' || (err.message && err.message.includes('signal is aborted'))) {
+                alert('Le téléchargement a été interrompu. Vérifie ta connexion ou relance le launcher.');
+            } else {
+                alert('Erreur lors du téléchargement : ' + err.message);
+            }
+                    launch.Launch(opt);
+
+            // Optionnel : tu peux ici relancer le téléchargement ou afficher un bouton pour réessayer
+        });
 
         playInstanceBTN.style.display = "none"
         infoStartingBOX.style.display = "block"
