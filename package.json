@@ -1,7 +1,7 @@
 {
     "name": "Miyura-Launcher",
     "preductname": "Miyura Launcher",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Launcher Mincraft pour le serveur Miyura",
     "main": "src/app.js",
     "author": {
