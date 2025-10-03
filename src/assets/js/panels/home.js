@@ -325,15 +325,14 @@ class Home {
         });
 
         launch.on('error', err => {
-            let popupError = new popup()
-
-            popupError.openPopup({
-                title: 'Erreur',
-                content: err.error,
-                color: 'red',
-                options: true
-            })
-
+            // Si erreur réseau, ignorer et continuer
+            if (err.name === 'AbortError' || (err.message && err.message.includes('signal is aborted')) || (err.error && err.error.includes('network'))) {
+                console.warn('[Miyura-Launcher]: Erreur réseau ignorée, tentative de reprise du téléchargement...', err);
+                // Ici, on peut éventuellement relancer le téléchargement ou juste ignorer
+                return;
+            }
+            // Pour les autres erreurs, log mais pas de popup
+            console.error('[Miyura-Launcher]: Erreur non réseau', err);
             if (configClient.launcher_config.closeLauncher == 'close-launcher') {
                 ipcRenderer.send("main-window-show")
             };
@@ -342,7 +341,6 @@ class Home {
             playInstanceBTN.style.display = "flex"
             infoStarting.innerHTML = `Vérification`
             new logger(pkg.name, '#7289da');
-            console.log(err);
         });
     }
 
