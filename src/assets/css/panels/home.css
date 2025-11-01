@@ -400,42 +400,42 @@
         }
 
         .play-elements {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-        .play-instance {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+.play-instance {
+  display: flex;
+  align-items: center;
+}
 
-        .play-btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-            color: white;
-            border: none;
-            padding: 1rem 3rem;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(212, 162, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
 
-        .play-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
+        .play-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* espace entre les deux boutons */
+  margin-top: 20px;
+}
+
+.play-btn {
+  background-color: #f5bc00;
+  color: #fff;
+  font-weight: 700;
+  padding: 14px 32px; /* plus large et plus haut */
+  border: none;
+  border-radius: 10px 0 0 10px;
+  cursor: pointer;
+  height: 52px; /* hauteur augmentée */
+  font-size: 16px;
+}
+
+
+.play-btn:hover {
+  background-color: #c48f00;
+}
+
 
         .play-btn:hover::before {
             left: 100%;
@@ -450,27 +450,23 @@
             transform: translateY(0);
         }
 
-       .instance-select {
-    display: flex;
-    align-items: center;
-    position: absolute;
-    right: -3;
-    top: -2;
-    color: var(--element-color);
-    font-size: 1rem;
-    height: calc(100% - 1px);
-    border: solid 3px var(--element-color);
-    text-align: center;
-    border-radius: 15px;
-    padding: 0 0.5rem;
-    cursor: pointer;
+.instance-select {
+  background-color: #ffd23f;
+  width: 52px;
+  height: 52px; /* même hauteur que le bouton jouer */
+  border-radius: 0 10px 10px 0;
+  margin-left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.instance-select:before {
-    transform: rotate(270deg);
-    pointer-events: none;
-}
 
+.instance-select:hover {
+  background-color: #ffcd00;
+}
 .info-starting-game {
     display: none;
     text-align: center;
@@ -506,7 +502,9 @@
     display: none;
     width: 100%;
     height: 100%;
-    background: #000000b3;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 10;
     flex-direction: column;
     align-items: center;
@@ -516,9 +514,15 @@
 
 .instances-tab {
     position: relative;
-    background: var(--background);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
-    padding: 1rem 3rem;
+    padding: 1rem 3rem; /* même taille qu'avant */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: #fff;
+    transition: transform 0.2s ease;
 }
 
 .close-popup {
@@ -526,12 +530,18 @@
     display: flex;
     top: 10px;
     right: 10px;
-    background: var(--shadow);
+    background: rgba(255, 255, 255, 0.15);
     height: 30px;
     width: 30px;
     border-radius: 10px;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.close-popup:hover {
+    background: rgba(255, 255, 255, 0.25);
 }
 
 .instances-tab p {
@@ -540,21 +550,28 @@
 }
 
 .instance-elements {
-    background: var(--background-element);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     text-align: center;
     border-radius: 10px;
     margin: 0.5rem 0;
     font-size: 1.5rem;
     cursor: pointer;
+    color: #fff;
+    transition: background 0.2s, transform 0.1s;
 }
 
 .instance-elements:hover {
-    background: var(--element-color);
+    background: rgba(255, 255, 255, 0.18);
+    transform: scale(1.02);
 }
 
 .active-instance {
-    background: var(--element-color);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
 }
+
+
 .progress-bar::-webkit-progress-value {
     background-color: var(--element-color);
     border-radius: 10px;

@@ -1,14 +1,10 @@
 {
-    "name": "Miyura-Launcher",
+    "name": "miyura-launcher",
     "preductname": "Miyura Launcher",
-    "version": "1.0.7",
+    "version": "1.1.0",
     "description": "Launcher Mincraft pour le serveur Miyura",
     "main": "src/app.js",
-    "author": {
-        "name": "luuxis, Miyura, Inc.",
-        "email": "contact@luuxis.fr",
-        "url": "https://github.com/luuxis"
-    },
+    "author": "luuxis, Miyura, Inc. <contact@luuxis.fr> (https://github.com/luuxis)",
     "url": "https://miyura-mc.fr/MiyuraLauncher/",
     "scripts": {
         "start": "cross-env-shell NODE_ENV=dev electron .",
@@ -42,5 +38,13 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/AstraZdq/Miyura-Launcher.git"
-    }
+    },
+    "directories": {
+        "doc": "docs"
+    },
+    "keywords": [],
+    "bugs": {
+        "url": "https://github.com/AstraZdq/Miyura-Launcher/issues"
+    },
+    "homepage": "https://github.com/AstraZdq/Miyura-Launcher#readme"
 }
