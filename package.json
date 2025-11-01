@@ -1,7 +1,7 @@
 {
     "name": "miyura-launcher",
     "preductname": "Miyura Launcher",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "Launcher Mincraft pour le serveur Miyura",
     "main": "src/app.js",
     "author": "luuxis, Miyura, Inc. <contact@luuxis.fr> (https://github.com/luuxis)",
@@ -28,8 +28,8 @@
     },
     "devDependencies": {
         "cross-env": "^7.0.3",
-        "electron": "^30.5.1",
-        "electron-builder": "^26.0.12",
+        "electron": "^28.2.0",
+        "electron-builder": "^25.1.8",
         "javascript-obfuscator": "^4.1.0",
         "jimp": "^0.22.12",
         "nodemon": "^3.1.2",
